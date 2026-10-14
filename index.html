@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UPI Payments Analysis | Akshat Rastogi</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+ body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f4f6fa;color:#111}
+ .wrap{max-width:1100px;margin:0 auto;padding:24px 16px}
+ h1{margin:0 0 4px;font-size:26px} .sub{color:#555;margin-bottom:20px}
+ .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+ .card{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+ .card small{color:#666;display:block;margin-bottom:6px} .card b{font-size:24px}
+ .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:14px}
+ .box{background:#fff;border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+ .box h3{margin:0 0 10px;font-size:15px}
+ .rec{background:#fff;border-radius:10px;padding:14px 18px;margin-top:14px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+ .rec li{margin-bottom:6px} .note{color:#666;font-size:12px;margin-top:14px}
+ @media(max-width:520px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <h1>UPI Payments Analysis</h1>
+ <div class="sub">Monthly UPI data from NPCI, in Rs. By Akshat Rastogi</div>
+ <div class="cards">
+  <div class="card"><small>Latest month (Sep 2026) volume</small><b>24,068 Mn</b></div>
+  <div class="card"><small>Latest month value</small><b>&#8377;29.37 lakh crore</b></div>
+  <div class="card"><small>Average payment (Sep 2026)</small><b>&#8377;1,220</b></div>
+  <div class="card"><small>Apr 2026 vs Apr 2025 volume</small><b>+24.9%</b></div>
+ </div>
+ <div class="grid">
+  <div class="box"><h3>Monthly transactions (million)</h3><canvas id="c1"></canvas></div>
+  <div class="box"><h3>Monthly value (&#8377; lakh crore)</h3><canvas id="c2"></canvas></div>
+  <div class="box"><h3>Average payment size (&#8377;)</h3><canvas id="c3"></canvas></div>
+  <div class="box"><h3>Average payment by state, Aug 2026 (&#8377;)</h3><canvas id="c4"></canvas></div>
+ </div>
+ <div class="rec">
+  <b>What I found</b>
+  <ul>
+   <li>UPI volume grew about 24% and value about 19% to 21% compared with the same month last year (Apr to Jun 2026).</li>
+   <li>The average payment fell from about &#8377;1,338 (Apr 2025) to about &#8377;1,220 (Sep 2026). People are making more, smaller payments.</li>
+   <li>Telangana and Tamil Nadu have bigger average payments than Maharashtra and Uttar Pradesh.</li>
+  </ul>
+  <b>What I would suggest</b>
+  <ul>
+   <li>Plan extra server capacity before the busiest months.</li>
+   <li>Design offers and rewards for small everyday payments.</li>
+   <li>Focus new merchant tie-ups on states with high payment value, not only high volume.</li>
+  </ul>
+ </div>
+ <div class="note">Source: NPCI UPI Product Statistics. Some months are not in this dataset. Daily numbers and averages are my own calculations.</div>
+</div>
+<script>
+const months=['Apr 25','May 25','Jun 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26','Jul 26','Aug 26','Sep 26'];
+const vol=[17893.42,18677.46,18395.01,20466.98,21634.67,21703.44,20394.18,22641.11,22346.80,23201.93,22716.07,23658.35,24508.96,24068.38];
+const val=[2394925.87,2514297.01,2403930.69,2631632.63,2796712.73,2833481.22,2684229.29,2952542.05,2902988.05,2990424.21,2892138.67,2987880.49,2982355.95,2937396.67];
+const valL=val.map(v=>+(v/100000).toFixed(2));
+const avg=val.map((v,i)=>Math.round(v*10/vol[i]));
+const states=['Telangana','Tamil Nadu','Karnataka','Uttar Pradesh','Maharashtra'];
+const sAvg=[1523,1504,1384,1210,1166];
+const opt={plugins:{legend:{display:false}},scales:{x:{ticks:{maxRotation:60}}}};
+new Chart(document.getElementById('c1'),{type:'line',data:{labels:months,datasets:[{data:vol,borderColor:'#1a4fa0',tension:.25}]},options:opt});
+new Chart(document.getElementById('c2'),{type:'line',data:{labels:months,datasets:[{data:valL,borderColor:'#2e8b57',tension:.25}]},options:opt});
+new Chart(document.getElementById('c3'),{type:'bar',data:{labels:months,datasets:[{data:avg,backgroundColor:'#e08a1e'}]},options:{plugins:{legend:{display:false}},scales:{y:{min:1000}}}});
+new Chart(document.getElementById('c4'),{type:'bar',data:{labels:states,datasets:[{data:sAvg,backgroundColor:'#7b4fc4'}]},options:{plugins:{legend:{display:false}},scales:{y:{min:1000}}}});
+</script>
+</body>
+</html>
