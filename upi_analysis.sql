@@ -61,16 +61,18 @@ ORDER BY year, month;
 
 
 -- Question 2: How much did UPI grow compared with the same month last year?
--- We join the table with itself: this year's row (this_year) with the same month in the year before (last_year).
-SELECT this_year.year,
-       this_year.month,
-       ROUND((this_year.volume_mn - last_year.volume_mn) * 100 / last_year.volume_mn, 1) AS volume_growth_percent,
-       ROUND((this_year.value_cr  - last_year.value_cr)  * 100 / last_year.value_cr, 1)  AS value_growth_percent
-FROM upi_monthly this_year
-JOIN upi_monthly last_year
-  ON this_year.month = last_year.month
- AND this_year.year  = last_year.year + 1
-ORDER BY this_year.year, this_year.month;
+-- We only have 2025 and 2026 months, so we put the two years side by side.
+-- CASE WHEN picks out the 2025 number and the 2026 number for each month.
+-- Growth % = (new - old) * 100 / old
+SELECT month,
+       SUM(CASE WHEN year = 2025 THEN volume_mn END) AS volume_2025,
+       SUM(CASE WHEN year = 2026 THEN volume_mn END) AS volume_2026,
+       ROUND((SUM(CASE WHEN year = 2026 THEN volume_mn END) - SUM(CASE WHEN year = 2025 THEN volume_mn END)) * 100
+             / SUM(CASE WHEN year = 2025 THEN volume_mn END), 1) AS volume_growth_percent
+FROM upi_monthly
+WHERE month IN (4, 5, 6)      -- only months that exist in both years
+GROUP BY month
+ORDER BY month;
 
 
 -- Question 3: Which months had the most transactions?
