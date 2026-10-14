@@ -6,65 +6,219 @@
 <title>UPI Payments Analysis | Akshat Rastogi</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
- body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f4f6fa;color:#111}
- .wrap{max-width:1100px;margin:0 auto;padding:24px 16px}
- h1{margin:0 0 4px;font-size:26px} .sub{color:#555;margin-bottom:20px}
- .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
- .card{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
- .card small{color:#666;display:block;margin-bottom:6px} .card b{font-size:24px}
- .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:14px}
- .box{background:#fff;border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
- .box h3{margin:0 0 10px;font-size:15px}
- .rec{background:#fff;border-radius:10px;padding:14px 18px;margin-top:14px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
- .rec li{margin-bottom:6px} .note{color:#666;font-size:12px;margin-top:14px}
+ :root{--bg:#0b1020;--card:#141b34;--line:#26305a;--text:#eef1ff;--muted:#9aa5d1;--a:#7c5cff;--b:#22d3ee;--c:#ffb454}
+ *{box-sizing:border-box}
+ html{scroll-behavior:smooth}
+ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;overflow-x:hidden}
+ a{color:var(--b)}
+ .wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+
+ /* hero */
+ .hero{position:relative;min-height:88vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;
+   background:linear-gradient(120deg,#0b1020,#1b1450,#0b3556,#0b1020);background-size:300% 300%;animation:shift 14s ease infinite}
+ @keyframes shift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+ .hero h1{font-size:clamp(34px,7vw,68px);margin:0 0 10px;letter-spacing:-1px;animation:rise 1s ease both}
+ .hero h1 span{background:linear-gradient(90deg,var(--b),var(--a),var(--c));-webkit-background-clip:text;background-clip:text;color:transparent}
+ .hero p{color:var(--muted);font-size:clamp(15px,2.2vw,20px);max-width:640px;margin:0 auto 22px;animation:rise 1s .2s ease both}
+ .hero .tag{display:inline-block;padding:6px 14px;border:1px solid var(--line);border-radius:30px;color:var(--muted);font-size:13px;margin:0 4px 6px;animation:rise 1s .4s ease both}
+ @keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+ .coin{position:absolute;bottom:-60px;font-weight:bold;color:rgba(255,255,255,.14);animation:float linear infinite;user-select:none}
+ @keyframes float{to{transform:translateY(-110vh) rotate(25deg)}}
+ .scroll{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:13px;animation:bob 1.6s ease-in-out infinite}
+ @keyframes bob{50%{transform:translate(-50%,8px)}}
+
+ /* sections */
+ section{padding:64px 0}
+ h2{font-size:clamp(24px,4vw,34px);margin:0 0 8px}
+ .lead{color:var(--muted);margin:0 0 28px;max-width:720px}
+ .reveal{opacity:0;transform:translateY(34px);transition:opacity .8s ease,transform .8s ease}
+ .reveal.show{opacity:1;transform:none}
+
+ .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+ .stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;transition:transform .25s,border-color .25s}
+ .stat:hover{transform:translateY(-6px);border-color:var(--a)}
+ .stat b{display:block;font-size:34px;color:var(--b)}
+ .stat small{color:var(--muted)}
+
+ .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:16px}
+ .box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+ .box h3{margin:0 0 12px;font-size:15px;color:var(--muted);font-weight:normal}
+
+ .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+ .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+ .panel h3{margin:0 0 10px}
+ .panel li{margin-bottom:10px}
+
+ .steps{position:relative;padding-left:26px;border-left:2px solid var(--line)}
+ .step{position:relative;margin-bottom:22px}
+ .step::before{content:"";position:absolute;left:-35px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--a);box-shadow:0 0 0 5px rgba(124,92,255,.2)}
+ .step b{display:block}
+ .step span{color:var(--muted)}
+
+ .btns a{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:30px;background:linear-gradient(90deg,var(--a),var(--b));color:#fff;text-decoration:none;font-weight:bold;transition:transform .2s}
+ .btns a:hover{transform:scale(1.06)}
+ footer{padding:30px 0 50px;color:var(--muted);font-size:13px;text-align:center}
+
  @media(max-width:520px){.grid{grid-template-columns:1fr}}
+ @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 </style>
 </head>
 <body>
-<div class="wrap">
- <h1>UPI Payments Analysis</h1>
- <div class="sub">Monthly UPI data from NPCI, in Rs. By Akshat Rastogi</div>
- <div class="cards">
-  <div class="card"><small>Latest month (Sep 2026) volume</small><b>24,068 Mn</b></div>
-  <div class="card"><small>Latest month value</small><b>&#8377;29.37 lakh crore</b></div>
-  <div class="card"><small>Average payment (Sep 2026)</small><b>&#8377;1,220</b></div>
-  <div class="card"><small>Apr 2026 vs Apr 2025 volume</small><b>+24.9%</b></div>
+
+<header class="hero" id="top">
+ <div id="coins"></div>
+ <div class="wrap">
+  <h1>UPI <span>Payments</span> Analysis</h1>
+  <p>How fast is UPI growing in India, and how big is the average payment? A project using NPCI data in &#8377;.</p>
+  <div><span class="tag">NPCI data</span><span class="tag">SQL</span><span class="tag">Dashboard</span><span class="tag">By Akshat Rastogi</span></div>
  </div>
- <div class="grid">
-  <div class="box"><h3>Monthly transactions (million)</h3><canvas id="c1"></canvas></div>
-  <div class="box"><h3>Monthly value (&#8377; lakh crore)</h3><canvas id="c2"></canvas></div>
-  <div class="box"><h3>Average payment size (&#8377;)</h3><canvas id="c3"></canvas></div>
-  <div class="box"><h3>Average payment by state, Aug 2026 (&#8377;)</h3><canvas id="c4"></canvas></div>
+ <div class="scroll">&#8595; scroll</div>
+</header>
+
+<section>
+ <div class="wrap reveal">
+  <h2>The numbers at a glance</h2>
+  <p class="lead">Latest month in my data is September 2026.</p>
+  <div class="stats">
+   <div class="stat"><b data-to="24068" data-suffix=" Mn">0</b><small>UPI transactions in Sep 2026</small></div>
+   <div class="stat"><b data-to="29.37" data-dec="2" data-prefix="&#8377;" data-suffix=" L Cr">0</b><small>Value moved in Sep 2026</small></div>
+   <div class="stat"><b data-to="1220" data-prefix="&#8377;">0</b><small>Average payment, Sep 2026</small></div>
+   <div class="stat"><b data-to="24.9" data-dec="1" data-prefix="+" data-suffix="%">0</b><small>Volume growth, Apr 2026 vs Apr 2025</small></div>
+  </div>
  </div>
- <div class="rec">
-  <b>What I found</b>
-  <ul>
-   <li>UPI volume grew about 24% and value about 19% to 21% compared with the same month last year (Apr to Jun 2026).</li>
-   <li>The average payment fell from about &#8377;1,338 (Apr 2025) to about &#8377;1,220 (Sep 2026). People are making more, smaller payments.</li>
-   <li>Telangana and Tamil Nadu have bigger average payments than Maharashtra and Uttar Pradesh.</li>
-  </ul>
-  <b>What I would suggest</b>
-  <ul>
-   <li>Plan extra server capacity before the busiest months.</li>
-   <li>Design offers and rewards for small everyday payments.</li>
-   <li>Focus new merchant tie-ups on states with high payment value, not only high volume.</li>
-  </ul>
+</section>
+
+<section>
+ <div class="wrap reveal">
+  <h2>The business question</h2>
+  <p class="lead">How fast is UPI growing, how big is the average payment in &#8377;, and what should a bank or payment app plan for?</p>
  </div>
- <div class="note">Source: NPCI UPI Product Statistics. Some months are not in this dataset. Daily numbers and averages are my own calculations.</div>
-</div>
+</section>
+
+<section>
+ <div class="wrap">
+  <div class="reveal">
+   <h2>The charts</h2>
+   <p class="lead">Monthly data from NPCI. Some months are not in my data, so the lines skip them.</p>
+  </div>
+  <div class="grid">
+   <div class="box reveal"><h3>Monthly transactions (million)</h3><canvas id="c1"></canvas></div>
+   <div class="box reveal"><h3>Monthly value (&#8377; lakh crore)</h3><canvas id="c2"></canvas></div>
+   <div class="box reveal"><h3>Average payment size (&#8377;)</h3><canvas id="c3"></canvas></div>
+   <div class="box reveal"><h3>Average payment by state, Aug 2026 (&#8377;)</h3><canvas id="c4"></canvas></div>
+  </div>
+ </div>
+</section>
+
+<section>
+ <div class="wrap two">
+  <div class="panel reveal">
+   <h3>What I found</h3>
+   <ul>
+    <li>Volume grew about 24% and value about 19% to 21% compared with the same month last year (Apr to Jun 2026).</li>
+    <li>Daily transactions went from about 596 million (Apr 2025) to about 802 million (Sep 2026).</li>
+    <li>The average payment fell from about &#8377;1,338 to about &#8377;1,220. People are making more, smaller payments.</li>
+    <li>Telangana and Tamil Nadu have bigger average payments than Maharashtra and Uttar Pradesh.</li>
+   </ul>
+  </div>
+  <div class="panel reveal">
+   <h3>What I would suggest</h3>
+   <ol>
+    <li>Plan extra server capacity before the busiest months.</li>
+    <li>Design offers for small everyday payments, since the average payment is falling.</li>
+    <li>Focus new merchant tie-ups on states with high payment value, not only high volume.</li>
+   </ol>
+  </div>
+ </div>
+</section>
+
+<section>
+ <div class="wrap">
+  <div class="reveal"><h2>How I did it</h2><p class="lead">Simple steps, from data to dashboard.</p></div>
+  <div class="steps">
+   <div class="step reveal"><b>1. Collected the data</b><span>Monthly UPI numbers from NPCI, and state-wise numbers for Aug 2026.</span></div>
+   <div class="step reveal"><b>2. Prepared it</b><span>Put the data in tables and added days in each month, so short months are compared fairly.</span></div>
+   <div class="step reveal"><b>3. Asked questions with SQL</b><span>Average payment, daily transactions, growth compared with last year, busiest months, and states.</span></div>
+   <div class="step reveal"><b>4. Built this dashboard</b><span>Charts for the main findings, plus my recommendations.</span></div>
+  </div>
+ </div>
+</section>
+
+<section>
+ <div class="wrap reveal btns">
+  <h2>See the code</h2>
+  <p class="lead">The SQL queries, data files and write-up are on GitHub.</p>
+  <a href="https://github.com/AkshatRastogi-Analyst/upi-payments-analysis" target="_blank" rel="noopener">GitHub Repository</a>
+  <a href="https://github.com/AkshatRastogi-Analyst/upi-payments-analysis/blob/main/upi_analysis.sql" target="_blank" rel="noopener">SQL Queries</a>
+ </div>
+</section>
+
+<footer>Source: NPCI UPI Product Statistics. Averages and daily numbers are my own calculations. &copy; Akshat Rastogi</footer>
+
 <script>
-const months=['Apr 25','May 25','Jun 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26','Jul 26','Aug 26','Sep 26'];
-const vol=[17893.42,18677.46,18395.01,20466.98,21634.67,21703.44,20394.18,22641.11,22346.80,23201.93,22716.07,23658.35,24508.96,24068.38];
-const val=[2394925.87,2514297.01,2403930.69,2631632.63,2796712.73,2833481.22,2684229.29,2952542.05,2902988.05,2990424.21,2892138.67,2987880.49,2982355.95,2937396.67];
-const valL=val.map(v=>+(v/100000).toFixed(2));
-const avg=val.map((v,i)=>Math.round(v*10/vol[i]));
-const states=['Telangana','Tamil Nadu','Karnataka','Uttar Pradesh','Maharashtra'];
-const sAvg=[1523,1504,1384,1210,1166];
-const opt={plugins:{legend:{display:false}},scales:{x:{ticks:{maxRotation:60}}}};
-new Chart(document.getElementById('c1'),{type:'line',data:{labels:months,datasets:[{data:vol,borderColor:'#1a4fa0',tension:.25}]},options:opt});
-new Chart(document.getElementById('c2'),{type:'line',data:{labels:months,datasets:[{data:valL,borderColor:'#2e8b57',tension:.25}]},options:opt});
-new Chart(document.getElementById('c3'),{type:'bar',data:{labels:months,datasets:[{data:avg,backgroundColor:'#e08a1e'}]},options:{plugins:{legend:{display:false}},scales:{y:{min:1000}}}});
-new Chart(document.getElementById('c4'),{type:'bar',data:{labels:states,datasets:[{data:sAvg,backgroundColor:'#7b4fc4'}]},options:{plugins:{legend:{display:false}},scales:{y:{min:1000}}}});
+// floating rupee symbols in the hero
+(function(){
+  var box=document.getElementById('coins');
+  for(var i=0;i<16;i++){
+    var s=document.createElement('div');
+    s.className='coin';
+    s.textContent='\u20B9';
+    s.style.left=(Math.random()*96)+'%';
+    s.style.fontSize=(18+Math.random()*44)+'px';
+    s.style.animationDuration=(9+Math.random()*10)+'s';
+    s.style.animationDelay=(-Math.random()*14)+'s';
+    box.appendChild(s);
+  }
+})();
+
+// show sections when they scroll into view
+var io=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); } });
+},{threshold:0.15});
+document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+// count-up numbers
+function countUp(el){
+  var to=parseFloat(el.dataset.to), dec=parseInt(el.dataset.dec||'0',10);
+  var pre=el.dataset.prefix||'', suf=el.dataset.suffix||'';
+  var t0=null, dur=1600;
+  function frame(t){
+    if(!t0) t0=t;
+    var p=Math.min((t-t0)/dur,1), v=to*(1-Math.pow(1-p,3));
+    el.innerHTML=pre+v.toLocaleString('en-IN',{minimumFractionDigits:dec,maximumFractionDigits:dec})+suf;
+    if(p<1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+var io2=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting){ countUp(e.target); io2.unobserve(e.target); } });
+},{threshold:0.6});
+document.querySelectorAll('[data-to]').forEach(function(el){ io2.observe(el); });
+
+// data
+var months=['Apr 25','May 25','Jun 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26','Jul 26','Aug 26','Sep 26'];
+var vol=[17893.42,18677.46,18395.01,20466.98,21634.67,21703.44,20394.18,22641.11,22346.80,23201.93,22716.07,23658.35,24508.96,24068.38];
+var val=[2394925.87,2514297.01,2403930.69,2631632.63,2796712.73,2833481.22,2684229.29,2952542.05,2902988.05,2990424.21,2892138.67,2987880.49,2982355.95,2937396.67];
+var valL=val.map(function(v){return +(v/100000).toFixed(2);});
+var avg=val.map(function(v,i){return Math.round(v*10/vol[i]);});
+var states=['Telangana','Tamil Nadu','Karnataka','Uttar Pradesh','Maharashtra'];
+var sAvg=[1523,1504,1384,1210,1166];
+
+// charts, drawn when they scroll into view
+Chart.defaults.color='#9aa5d1';
+Chart.defaults.borderColor='rgba(255,255,255,.08)';
+var base={plugins:{legend:{display:false}},animation:{duration:1600,easing:'easeOutQuart'}};
+function opts(extra){ var o=JSON.parse(JSON.stringify(base)); if(extra){ o.scales=extra; } return o; }
+var makers={
+ c1:function(c){ new Chart(c,{type:'line',data:{labels:months,datasets:[{data:vol,borderColor:'#22d3ee',backgroundColor:'rgba(34,211,238,.15)',fill:true,tension:.3}]},options:opts()}); },
+ c2:function(c){ new Chart(c,{type:'line',data:{labels:months,datasets:[{data:valL,borderColor:'#7c5cff',backgroundColor:'rgba(124,92,255,.15)',fill:true,tension:.3}]},options:opts()}); },
+ c3:function(c){ new Chart(c,{type:'bar',data:{labels:months,datasets:[{data:avg,backgroundColor:'#ffb454',borderRadius:6}]},options:opts({y:{min:1000}})}); },
+ c4:function(c){ new Chart(c,{type:'bar',data:{labels:states,datasets:[{data:sAvg,backgroundColor:['#22d3ee','#22d3ee','#7c5cff','#7c5cff','#7c5cff'],borderRadius:6}]},options:opts({y:{min:1000}})}); }
+};
+var io3=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting){ makers[e.target.id](e.target); io3.unobserve(e.target); } });
+},{threshold:0.3});
+Object.keys(makers).forEach(function(id){ io3.observe(document.getElementById(id)); });
 </script>
 </body>
 </html>
