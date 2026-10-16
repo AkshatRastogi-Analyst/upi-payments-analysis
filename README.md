@@ -1,5 +1,8 @@
 # UPI Payments Analysis (India)
 
+## Dashboard Link
+Link - https://akshatrastogi-analyst.github.io/upi-payments-analysis/
+
 ## Business question
 How fast is UPI growing, how big is the average payment in Rs, and what should a bank or payment app plan for?
 
@@ -31,5 +34,3 @@ How fast is UPI growing, how big is the average payment in Rs, and what should a
 ## Limits
 Some months are missing from the data. Averages and daily numbers are my own calculations from NPCI totals.
 
-## Live Site Link
-Your site is live at https://akshatrastogi-analyst.github.io/upi-payments-analysis/
